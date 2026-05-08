@@ -6,6 +6,7 @@ report*.html
 simple_report_test.html
 *.log
 *.txt
+!requirements.txt
 api_reports/
 inbox/
 processed/
