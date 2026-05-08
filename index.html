@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sensor Data Validator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; text-align: center; margin: 40px; }
+        .drop-zone {
+            border: 2px dashed #007BFF;
+            padding: 40px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .drop-zone.dragover {
+            background: #e6f2ff;
+        }
+        #result { margin-top: 20px; text-align: left; }
+    </style>
+</head>
+<body>
+
+<h1>📊 Sensor Data Validator</h1>
+
+<div class="drop-zone" id="dropZone">
+    Drag & Drop CSV File Here or Click to Upload
+</div>
+
+<input type="file" id="fileInput" hidden />
+
+<button onclick="uploadFile()">🚀 Validate</button>
+
+<div id="result"></div>
+
+<canvas id="chart"></canvas>
+
+<script>
+let selectedFile = null;
+
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+
+dropZone.onclick = () => fileInput.click();
+
+fileInput.onchange = (e) => {
+    selectedFile = e.target.files[0];
+    dropZone.innerText = selectedFile.name;
+};
+
+dropZone.ondragover = e => {
+    e.preventDefault();
+    dropZone.classList.add("dragover");
+};
+
+dropZone.ondrop = e => {
+    e.preventDefault();
+    selectedFile = e.dataTransfer.files[0];
+    dropZone.innerText = selectedFile.name;
+};
+
+async function uploadFile() {
+    if (!selectedFile) {
+        alert("Please select a file");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("file", selectedFile);
+
+    let response = await fetch("http://127.0.0.1:8000/validate/", {
+        method: "POST",
+        body: formData
+    });
+
+    let data = await response.json();
+
+    document.getElementById("result").innerHTML = `
+        <h2>✅ Results</h2>
+        <p><b>Total Rows:</b> ${data.summary.total_rows}</p>
+        <p><b>Anomalies:</b> ${data.anomalies_count}</p>
+    `;
+
+    const sensors = Object.keys(data.summary.sensor_stats);
+    const avgValues = sensors.map(s => data.summary.sensor_stats[s].avg);
+
+    new Chart(document.getElementById("chart"), {
+        type: "bar",
+        data: {
+            labels: sensors,
+            datasets: [{
+                label: "Average Values",
+                data: avgValues
+            }]
+        }
+    });
+}
+</script>
+
+</body>
+</html>

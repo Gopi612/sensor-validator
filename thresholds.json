@@ -1,0 +1,27 @@
+{
+  "temperature": {
+    "min": 10.0,
+    "max": 80.0,
+    "unit": "°C"
+  },
+  "pressure": {
+    "min": 950.0,
+    "max": 1050.0,
+    "unit": "hPa"
+  },
+  "humidity": {
+    "min": 20.0,
+    "max": 90.0,
+    "unit": "%"
+  },
+  "voltage": {
+    "min": 3.0,
+    "max": 5.5,
+    "unit": "V"
+  },
+  "vibration": {
+    "min": 0.0,
+    "max": 15.0,
+    "unit": "mm/s"
+  }
+}

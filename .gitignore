@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+uploads/
+anomalies*.csv
+report*.html
+simple_report_test.html
+*.log
+*.txt
+api_reports/
+inbox/
+processed/
+results/
+data/
